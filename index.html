@@ -67,7 +67,7 @@ header.final-banner .brand-logo,header.final-banner h1,header.final-banner p,hea
 <label for="assetNo">رقم اللوحة / الأصل</label><input id="assetNo" required maxlength="80" placeholder="مثال: MDB-01 أو TR-05" dir="auto">
 <label for="floor">الدور</label><select id="floor" required><option value=""></option><option value="floor_0"></option><option value="floor_1"></option><option value="floor_2"></option><option value="floor_3"></option><option value="floor_4"></option><option value="floor_5"></option><option value="floor_6"></option><option value="floor_7"></option><option value="floor_8"></option><option value="floor_9"></option><option value="floor_10"></option><option value="floor_11"></option><option value="floor_12"></option><option value="floor_13"></option><option value="floor_14"></option><option value="floor_15"></option><option value="floor_16"></option><option value="floor_17"></option><option value="floor_18"></option><option value="floor_19"></option></select>
 <label for="site">اسم الكلية / الموقع</label><select id="site" required><option value=""></option><option value="site_0"></option><option value="site_1"></option><option value="site_2"></option><option value="site_3"></option><option value="site_4"></option><option value="site_5"></option><option value="site_6"></option><option value="site_7"></option><option value="site_8"></option><option value="site_9"></option><option value="site_10"></option><option value="site_11"></option><option value="site_12"></option><option value="site_13"></option><option value="site_14"></option><option value="site_15"></option></select>
-<div class="gps-box"><label id="gpsLabel" for="gpsBtn">موقع الأصل الكهربائي على الخريطة</label><button type="button" id="gpsBtn" class="gps-btn" style="width:100%;text-align:center;padding:14px;border-radius:12px">📍 اضغط هنا على الموقع لتحديد مكان الأصل</button><p id="gpsStatus" role="status" aria-live="polite">قف بجوار الأصل ثم اضغط على خانة الموقع. قد يطلب المتصفح الإذن أول مرة.</p><a id="gpsLink" target="_blank" rel="noopener noreferrer" hidden>📍 فتح موقع الأصل على خرائط Google</a></div>
+<div class="gps-box"><label id="gpsLabel" for="gpsBtn">موقع الأصل الكهربائي على الخريطة</label><button type="button" id="gpsBtn" class="gps-btn" style="width:100%;text-align:center;padding:14px;border-radius:12px">📍 اضغط هنا على الموقع لتحديد مكان الأصل</button><p id="gpsStatus" role="status" aria-live="polite">قف بجوار الأصل ثم اضغط على خانة الموقع. قد يطلب المتصفح الإذن أول مرة.</p><a id="gpsLink" target="_blank" rel="noopener noreferrer" hidden>📍 فتح موقع الأصل على خرائط Google</a><label for="manualGps" style="display:block;margin-top:12px">رابط الموقع من الخرائط (اختياري عند تعذر GPS)</label><input type="url" id="manualGps" dir="ltr" inputmode="url" placeholder="الصق رابط Google Maps أو Apple Maps هنا" style="width:100%;box-sizing:border-box"/><p id="gpsSaveStatus" role="status" aria-live="polite" style="font-size:13px;color:#176a49"></p></div>
 <label for="kind">نوع الصيانة</label><select id="kind" required><option value=""></option><option value="kind_0"></option><option value="kind_1"></option></select>
 <label for="notes">الملاحظات / الأعمال المنفذة</label><textarea id="notes" rows="6" maxlength="1200" dir="auto" placeholder="اكتب ملاحظات الصيانة والأعمال المنفذة هنا..."></textarea><p class="notes-hint" id="notesHint">مساحة لكتابة الملاحظات بالتفصيل (اختياري).</p>
 <button id="sendBtn" type="submit">إرسال التقرير عبر واتساب ←</button>
@@ -81,6 +81,8 @@ logo.onerror = () => { logo.removeAttribute("src"); logo.style.display = "none";
 const data = {"options": {"asset": [["لوحة رئيسية MDB", "Main Distribution Board (MDB)"], ["لوحة توزيع فرعية SMDB", "Sub-Main Distribution Board (SMDB)"], ["لوحة توزيع DB (طبلوه)", "Distribution Board (DB)"], ["محول كهربائي", "Electrical Transformer"], ["وحدة ربط حلقي RMU", "Ring Main Unit (RMU)"], ["مولد كهربائي", "Generator"], ["لوحة تحويل تلقائي ATS", "Automatic Transfer Switch (ATS)"], ["لوحة تحسين معامل القدرة PFC", "Power Factor Correction Panel (PFC)"], ["مصعد", "Elevator"], ["وحدة تكييف", "Air Conditioning Unit"], ["مضخة مياه", "Water Pump"], ["إنارة", "Lighting"], ["أخرى", "Other"]], "floor": [["الأرضي", "Ground Floor"], ["الأول", "1st Floor"], ["الثاني", "2nd Floor"], ["الثالث", "3rd Floor"], ["الرابع", "4th Floor"], ["الخامس", "5th Floor"], ["السادس", "6th Floor"], ["السابع", "7th Floor"], ["الثامن", "8th Floor"], ["التاسع", "9th Floor"], ["العاشر", "10th Floor"], ["الحادي عشر", "11th Floor"], ["الثاني عشر", "12th Floor"], ["الثالث عشر", "13th Floor"], ["الرابع عشر", "14th Floor"], ["الخامس عشر", "15th Floor"], ["السادس عشر", "16th Floor"], ["السابع عشر", "17th Floor"], ["الثامن عشر", "18th Floor"], ["السطح", "Roof"]], "site": [["كلية الهندسة", "College of Engineering"], ["كلية علوم الحاسب", "College of Computer Science"], ["كلية العلوم", "College of Science"], ["كلية طب الأسنان", "College of Dentistry"], ["كلية الطب", "College of Medicine"], ["كلية الصيدلة", "College of Pharmacy"], ["كلية التمريض والعلوم الصحية", "College of Nursing and Health Sciences"], ["كلية الفنون", "College of Arts"], ["المستشفى الجامعي", "University Hospital"], ["البرج الإداري", "Administration Tower"], ["إسكان الطلاب", "Student Housing"], ["إسكان أعضاء هيئة التدريس", "Faculty Housing"], ["مجمع محلية", "Mahliyah Campus"], ["مجمع صامطة", "Samtah Campus"], ["مجمع صبيا", "Sabya Campus"], ["موقع آخر", "Other Location"]], "kind": [["وقائية", "Preventive"], ["تصحيحية", "Corrective"]]}, "labels": {"tech": ["المسؤول", "Responsible Role"], "role": ["الصفة الوظيفية", "Job Role"], "asset": ["نوع الأصل", "Asset Type"], "assetNo": ["رقم اللوحة / الأصل", "Panel / Asset Number"], "floor": ["الدور", "Floor"], "site": ["اسم الكلية / الموقع", "College / Location"], "kind": ["نوع الصيانة", "Maintenance Type"]}, "placeholders": {"tech": ["اكتب اسم المسؤول", "Enter responsible person name"], "assetNo": ["مثال: MDB-01 أو TR-05", "Example: MDB-01 or TR-05"]}, "selectplace": {"asset": ["اختر نوع الأصل", "Select asset type"], "floor": ["اختر الدور", "Select floor"], "site": ["اختر الكلية / الموقع", "Select college / location"], "kind": ["اختر نوع الصيانة", "Select maintenance type"], "role": ["اختر الصفة الوظيفية", "Select job role"]}};
 let language = 'ar';
 let gpsPosition = null;
+const manualGps=document.getElementById('manualGps');
+manualGps.addEventListener('input',()=>{const v=manualGps.value.trim();document.getElementById('gpsSaveStatus').textContent=v?(language==='ar'?'✓ سيُرفق رابط الموقع مع تقرير واتساب':'✓ Map link will be included in WhatsApp report'):'';});
 function changeLanguage(lang){
   language = lang;
   document.documentElement.lang=lang;
@@ -113,6 +115,8 @@ function changeLanguage(lang){
   setText('#gpsBtn',lang==='ar'?'📍 اضغط هنا على الموقع لتحديد مكان الأصل':'📍 Tap here to capture asset location');
   if(!gpsPosition) setText('#gpsStatus',lang==='ar'?'قف بجوار الأصل واضغط هنا. قد يطلب المتصفح الإذن أول مرة.':'Stand near the asset and tap here. Browser permission may be required the first time.');
   setText('#gpsLink',lang==='ar'?'📍 فتح موقع الأصل على خرائط Google':'📍 Open asset location in Google Maps');
+  setText('label[for="manualGps"]',lang==='ar'?'رابط الموقع من الخرائط (اختياري عند تعذر GPS)':'Map link (optional if GPS fails)');
+  manualGps.placeholder=lang==='ar'?'الصق رابط Google Maps أو Apple Maps هنا':'Paste Google Maps or Apple Maps link here';
   setText('#notesHint',lang==='ar'?'مساحة لكتابة الملاحظات بالتفصيل (اختياري).':'Space for detailed notes (optional).');
   setText('#sendBtn',lang==='ar'?'إرسال التقرير عبر واتساب ←':'Send Report via WhatsApp →');
   setText('#helpText',lang==='ar'?'بعد الضغط على الزر، سيفتح واتساب برسالة جاهزة. اضغط إرسال داخل واتساب لإتمام العملية.':'WhatsApp will open with a prepared report. Tap Send in WhatsApp to complete submission.');
@@ -137,7 +141,8 @@ document.getElementById('gpsBtn').addEventListener('click',function(){
     gpsPosition={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:Math.round(pos.coords.accuracy)};
     const url='https://www.google.com/maps?q='+gpsPosition.lat+','+gpsPosition.lon;
     const link=document.getElementById('gpsLink');link.href=url;link.hidden=false;
-    status.textContent=(language==='ar'?'تم تسجيل موقع الأصل ✓ (دقة تقريبية: ':'Location captured ✓ (approx. accuracy: ')+gpsPosition.accuracy+' m)';
+    status.textContent=(language==='ar'?'تم تسجيل موقع الأصل ✓ وسيُرفق مع التقرير (دقة تقريبية: ':'Location captured ✓ and will be included in report (approx. accuracy: ')+gpsPosition.accuracy+' m)';
+    manualGps.value=url;manualGps.dispatchEvent(new Event('input'));
     btn.disabled=false;
   },err=>{
     gpsPosition=null;document.getElementById('gpsLink').hidden=true;btn.disabled=false;
@@ -162,6 +167,7 @@ document.getElementById('f').addEventListener('submit',function(e){
   const time=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(now);
   const notes=get('notes') || 'لا توجد ملاحظات / No notes';
   // Monospaced WhatsApp code block keeps the two-column report aligned.
+  const gpsUrl=manualGps.value.trim() || (gpsPosition ? 'https://www.google.com/maps?q='+gpsPosition.lat+','+gpsPosition.lon : '');
   const rows=[
     ['المسؤول / Responsible',({engineer:'مهندس / Engineer',supervisor:'مشرف / Supervisor',technician:'فني / Technician'})[get('tech')]],
     ['اسم المسؤول / Name',get('responsibleName')],
@@ -169,7 +175,7 @@ document.getElementById('f').addEventListener('submit',function(e){
     ['رقم الأصل / Asset No.',get('assetNo')],
     ['الدور / Floor',dual('floor')],
     ['الموقع / Location',dual('site')],
-    ['GPS / الموقع الجغرافي',gpsPosition ? 'https://www.google.com/maps?q='+gpsPosition.lat+','+gpsPosition.lon : 'غير مرفق / Not provided'],
+    ['GPS / الموقع الجغرافي',gpsUrl || 'غير مرفق / Not provided'],
     ['نوع الصيانة / Type',dual('kind')],
     ['التاريخ / Date',date],
     ['الوقت / Time',time]
