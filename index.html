@@ -166,30 +166,44 @@ document.getElementById('f').addEventListener('submit',function(e){
   const date=new Intl.DateTimeFormat('en-GB',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'}).format(now);
   const time=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(now);
   const notes=get('notes') || 'لا توجد ملاحظات / No notes';
-  // Monospaced WhatsApp code block keeps the two-column report aligned.
+  // WhatsApp supports bold/italic and Unicode dividers, not custom font colors.
+  // Keep each field on its own line to avoid Arabic/English alignment issues.
   const gpsUrl=manualGps.value.trim() || (gpsPosition ? 'https://www.google.com/maps?q='+gpsPosition.lat+','+gpsPosition.lon : '');
-  const rows=[
-    ['المسؤول / Responsible',({engineer:'مهندس / Engineer',supervisor:'مشرف / Supervisor',technician:'فني / Technician'})[get('tech')]],
-    ['اسم المسؤول / Name',get('responsibleName')],
-    ['نوع الأصل / Asset',dual('asset')],
-    ['رقم الأصل / Asset No.',get('assetNo')],
-    ['الدور / Floor',dual('floor')],
-    ['الموقع / Location',dual('site')],
-    ['GPS / الموقع الجغرافي',gpsUrl || 'غير مرفق / Not provided'],
-    ['نوع الصيانة / Type',dual('kind')],
-    ['التاريخ / Date',date],
-    ['الوقت / Time',time]
-  ];
+  const role=({engineer:'مهندس / Engineer',supervisor:'مشرف / Supervisor',technician:'فني / Technician'})[get('tech')] || '—';
+  const line=(label,value)=>'*'+label+'*\n'+(value || '—');
   const msg=[
     '🏛️ *جامعة جازان | Jazan University*',
-    '*إدارة التشغيل والصيانة | Operation & Maintenance*',
-    '*قسم الأنظمة الكهربائية | Electrical Systems Section*','',
-    '📋 *تقرير أعمال الصيانة | Maintenance Report*','',
-    '```'+rows.map(([label,value])=>label+' : '+value).join('\n')+'```','',
-    '📝 *الملاحظات والأعمال المنفذة | Notes & Work Performed*',
-    notes,'',
-    '━━━━━━━━━━━━━━━━',
-    '*قسم الأنظمة الكهربائية بإدارة الصيانة*',
+    '*إدارة التشغيل والصيانة*',
+    '_Operation & Maintenance Department_',
+    '*قسم الأنظمة الكهربائية*',
+    '_Electrical Systems Section_',
+    '━━━━━━━━━━━━━━━━━━',
+    '📋 *تقرير أعمال الصيانة*',
+    '*Maintenance Report*',
+    '━━━━━━━━━━━━━━━━━━',
+    '👷 *بيانات المسؤول | Responsible Details*',
+    line('الصفة الوظيفية | Role',role),
+    line('اسم المسؤول | Name',get('responsibleName')),
+    '──────────────────',
+    '⚡ *بيانات الأصل الكهربائي | Electrical Asset Details*',
+    line('نوع الأصل | Asset Type',dual('asset')),
+    line('رقم الأصل | Asset No.',get('assetNo')),
+    line('الدور | Floor',dual('floor')),
+    line('المبنى / الموقع | Building / Location',dual('site')),
+    '──────────────────',
+    '📍 *الموقع الجغرافي | GPS Location*',
+    gpsUrl || 'غير مرفق / Not provided',
+    '──────────────────',
+    '🛠️ *بيانات الصيانة | Maintenance Details*',
+    line('نوع الصيانة | Type',dual('kind')),
+    line('📅 تاريخ الصيانة | Maintenance Date',date),
+    line('الوقت | Time',time),
+    '──────────────────',
+    '📝 *الملاحظات والأعمال المنفذة*',
+    '*Notes & Work Performed*',
+    notes,
+    '━━━━━━━━━━━━━━━━━━',
+    '🔷 *قسم الأنظمة الكهربائية بإدارة الصيانة*',
     '*م. منصور سرور | Eng. Mansour Srour*'
   ].join('\n');
   window.location.href='https://wa.me/966548766001?text='+encodeURIComponent(msg);
