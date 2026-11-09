@@ -154,58 +154,90 @@ document.getElementById('gpsBtn').addEventListener('click',function(){
 document.getElementById('f').addEventListener('submit',function(e){
   e.preventDefault();
   if(!this.reportValidity())return;
+  const ar = language === 'ar';
   const get=id=>document.getElementById(id).value.trim();
-  const dual=id=>{
+  const localized=id=>{
     const val=get(id);
     const match=/^(asset|floor|site|kind)_(\d+)$/.exec(val);
     if(!match)return val;
-    const pair=data.options[match[1]][Number(match[2])];
-    return pair[0]+' / '+pair[1];
+    const pair=data.options[match[1]]?.[Number(match[2])];
+    return pair ? pair[ar?0:1] : val;
   };
+  const rolePair={engineer:['مهندس','Engineer'],supervisor:['مشرف','Supervisor'],technician:['فني','Technician']};
+  const role=rolePair[get('tech')]?.[ar?0:1] || '—';
   const now=new Date();
   const date=new Intl.DateTimeFormat('en-GB',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'}).format(now);
   const time=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(now);
-  const notes=get('notes') || 'لا توجد ملاحظات / No notes';
-  // WhatsApp supports bold/italic and Unicode dividers, not custom font colors.
-  // Keep each field on its own line to avoid Arabic/English alignment issues.
+  const notes=get('notes') || (ar?'لا توجد ملاحظات':'No notes');
   const gpsUrl=manualGps.value.trim() || (gpsPosition ? 'https://www.google.com/maps?q='+gpsPosition.lat+','+gpsPosition.lon : '');
-  const role=({engineer:'مهندس / Engineer',supervisor:'مشرف / Supervisor',technician:'فني / Technician'})[get('tech')] || '—';
   const line=(label,value)=>'*'+label+'*\n'+(value || '—');
-  const msg=[
-    '🏛️ *جامعة جازان | Jazan University*',
-    '*إدارة التشغيل والصيانة*',
-    '_Operation & Maintenance Department_',
-    '*قسم الأنظمة الكهربائية*',
-    '_Electrical Systems Section_',
-    '━━━━━━━━━━━━━━━━━━',
-    '📋 *تقرير أعمال الصيانة*',
-    '*Maintenance Report*',
-    '━━━━━━━━━━━━━━━━━━',
-    '👷 *بيانات المسؤول | Responsible Details*',
-    line('الصفة الوظيفية | Role',role),
-    line('اسم المسؤول | Name',get('responsibleName')),
-    '──────────────────',
-    '⚡ *بيانات الأصل الكهربائي | Electrical Asset Details*',
-    line('نوع الأصل | Asset Type',dual('asset')),
-    line('رقم الأصل | Asset No.',get('assetNo')),
-    line('الدور | Floor',dual('floor')),
-    line('المبنى / الموقع | Building / Location',dual('site')),
-    '──────────────────',
-    '📍 *الموقع الجغرافي | GPS Location*',
-    gpsUrl || 'غير مرفق / Not provided',
-    '──────────────────',
-    '🛠️ *بيانات الصيانة | Maintenance Details*',
-    line('نوع الصيانة | Type',dual('kind')),
-    line('📅 تاريخ الصيانة | Maintenance Date',date),
-    line('الوقت | Time',time),
-    '──────────────────',
-    '📝 *الملاحظات والأعمال المنفذة*',
-    '*Notes & Work Performed*',
-    notes,
-    '━━━━━━━━━━━━━━━━━━',
-    '🔷 *قسم الأنظمة الكهربائية بإدارة الصيانة*',
-    '*م. منصور سرور | Eng. Mansour Srour*'
-  ].join('\n');
+  const divider='──────────────────';
+  let msg;
+  if(ar){
+    msg=[
+      '🏛️ *جامعة جازان*',
+      '*إدارة التشغيل والصيانة*',
+      '*قسم الأنظمة الكهربائية*',
+      '━━━━━━━━━━━━━━━━━━',
+      '📋 *تقرير أعمال الصيانة*',
+      '━━━━━━━━━━━━━━━━━━',
+      '👷 *بيانات المسؤول*',
+      line('الصفة الوظيفية',role),
+      line('اسم المسؤول',get('responsibleName')),
+      divider,
+      '⚡ *بيانات الأصل الكهربائي*',
+      line('نوع الأصل',localized('asset')),
+      line('رقم الأصل',get('assetNo')),
+      line('الدور',localized('floor')),
+      line('المبنى / الموقع',localized('site')),
+      divider,
+      '📍 *الموقع الجغرافي*',
+      gpsUrl || 'غير مرفق',
+      divider,
+      '🛠️ *بيانات الصيانة*',
+      line('نوع الصيانة',localized('kind')),
+      line('📅 تاريخ الصيانة',date),
+      line('الوقت',time),
+      divider,
+      '📝 *الملاحظات والأعمال المنفذة*',
+      notes,
+      '━━━━━━━━━━━━━━━━━━',
+      '🔷 *قسم الأنظمة الكهربائية بإدارة الصيانة*',
+      '*م. منصور سرور*'
+    ].join('\n');
+  }else{
+    msg=[
+      '🏛️ *Jazan University*',
+      '*Operation & Maintenance Department*',
+      '*Electrical Systems Section*',
+      '━━━━━━━━━━━━━━━━━━',
+      '📋 *Maintenance Report*',
+      '━━━━━━━━━━━━━━━━━━',
+      '👷 *Responsible Details*',
+      line('Job Role',role),
+      line('Responsible Person Name',get('responsibleName')),
+      divider,
+      '⚡ *Electrical Asset Details*',
+      line('Asset Type',localized('asset')),
+      line('Asset Number',get('assetNo')),
+      line('Floor',localized('floor')),
+      line('Building / Location',localized('site')),
+      divider,
+      '📍 *GPS Location*',
+      gpsUrl || 'Not provided',
+      divider,
+      '🛠️ *Maintenance Details*',
+      line('Maintenance Type',localized('kind')),
+      line('📅 Maintenance Date',date),
+      line('Time',time),
+      divider,
+      '📝 *Notes & Work Performed*',
+      notes,
+      '━━━━━━━━━━━━━━━━━━',
+      '🔷 *Electrical Systems Section – Maintenance Department*',
+      '*Eng. Mansour Srour*'
+    ].join('\n');
+  }
   window.location.href='https://wa.me/966548766001?text='+encodeURIComponent(msg);
 });
 </script></body></html>
